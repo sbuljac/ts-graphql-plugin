@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "graphql": "^0.10.0",
-    "typescript": "^2.3.0"
+    "typescript": "2.3.3"
   },
   "ava": {
     "files": [
