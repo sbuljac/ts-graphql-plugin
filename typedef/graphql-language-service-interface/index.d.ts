@@ -67,4 +67,10 @@ declare module 'graphql-language-service-interface' {
     customRules?: CustomValidationRule[],
   ): Diagnostic[];
 
+  export function validateQuery(
+    ast: any,
+    schema?: any,
+    customRules?: CustomValidationRule[],
+  ): Diagnostic[];
+
 }

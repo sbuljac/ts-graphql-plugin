@@ -1,9 +1,11 @@
 import { buildClientSchema } from 'graphql';
+import { parse } from 'graphql/language';
 import {
   CompletionItem,
   Diagnostic,
   getAutocompleteSuggestions,
   getDiagnostics,
+  validateQuery,
   Position,
 } from 'graphql-language-service-interface';
 import * as ts from 'typescript/lib/tsserverlibrary';
@@ -82,9 +84,16 @@ export class GraphQLLanguageServiceAdapter {
       if (!this._tagCondition) return true;
       return isTagged(n, this._tagCondition);
     });
-    const diagonosticsList = nodes.map(n => getDiagnostics(n.getText().slice(1, n.getWidth() - 1)), this._schema);
+    const diagnosticsList = nodes.map(n => {
+      const query = n.getText().slice(1, n.getWidth() - 1);
+      const syntaxErrors = getDiagnostics(query, this._schema);
+      if (syntaxErrors.length) return syntaxErrors;
+      const ast = parse(query);
+      const semanticErrors = validateQuery(ast, this._schema);
+      return semanticErrors;
+    });
     const result = [...errors];
-    diagonosticsList.forEach((diagnostics, i) => {
+    diagnosticsList.forEach((diagnostics, i) => {
       const node = nodes[i];
       const nodeLC = this._helper.getLineAndChar(fileName, node.getStart());
       diagnostics.forEach(d => {

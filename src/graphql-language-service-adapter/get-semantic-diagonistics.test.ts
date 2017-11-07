@@ -41,3 +41,12 @@ test('should validate GraphQL syntax in template string', async t => {
                              + ' }`';
   t.deepEqual(validateFn(), [], 'no errors for valid query (multiline)');
 });
+
+test('should emit an error', async t => {
+  const fixture = craeteFixture('input.ts', await createSimpleSchema());
+  const validateFn: () => ts.Diagnostic[]
+    = fixture.adapter.getSemanticDiagnostics.bind(fixture.adapter, delegateFn, 'input.ts');
+  fixture.source = 'const ql = `query { hero }`';
+  const actual = validateFn();
+  t.is(actual.length, 1);
+});
