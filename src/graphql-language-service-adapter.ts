@@ -1,11 +1,9 @@
 import { GraphQLSchema } from 'graphql';
 import {
-  CompletionItem,
-  Diagnostic,
   getAutocompleteSuggestions,
   getDiagnostics,
-  Position,
 } from 'graphql-language-service-interface';
+import { Diagnostic, Position, CompletionItem } from 'graphql-language-service-types';
 import * as ts from 'typescript/lib/tsserverlibrary';
 import { isTagged, TagCondition } from './ts-util/index';
 
